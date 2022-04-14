@@ -1,0 +1,75 @@
+from tkinter import *
+from PIL import Image,ImageTk
+from tkinter.filedialog import askopenfilename
+from tkinter import messagebox as tmsg
+import os
+
+windwo=Tk()
+windwo.title("Image")
+windwo.geometry("600x500")
+
+def list_file():
+    global lst_box
+    for i in os.listdir():
+        if i.endswith(".png") or i.endswith(".ico") or i.endswith(".jpg") :
+            lst_box.insert(ACTIVE,f"{i}")
+
+
+def open_img():
+    global file,real_img2
+    file=askopenfilename(defaultextension='*.png',filetypes=[("All File","*.*")])
+    img2 = Image.open(file)
+    resized2 = img2.resize((1027, 760), Image.ANTIALIAS)
+    real_img2 = ImageTk.PhotoImage(resized2)
+    #Label(windwo, image=real_img2).pack()
+
+def set_img():
+    global file,img_lbl,real_img2
+    print(lst_box.get(ANCHOR))
+    if  lst_box.get(ANCHOR)=="" and file==None:
+        tmsg.showwarning("Image","You are not open any images")
+
+    elif lst_box.get(ANCHOR)!="":
+        img2 = Image.open(f"{lst_box.get(ANCHOR)}")
+        resized2 = img2.resize((1027, 760), Image.ANTIALIAS)
+        real_img2 = ImageTk.PhotoImage(resized2)
+        img_lbl = Label(frame2, image=real_img2)
+        img_lbl.pack(side=LEFT,anchor="ne")
+    else:
+        img_lbl=Label(frame2,image=real_img2)
+        img_lbl.pack(side=LEFT,anchor="ne")
+
+def delete_img():
+    global img_lbl
+    img_lbl.destroy()
+
+#Seting images
+file=None
+frame1=Frame(windwo) 
+frame1.pack(side=BOTTOM)
+
+#Creating List of button
+frame2=Frame(windwo)
+frame2.pack(side=TOP,anchor="nw")
+list_btn=Button(frame2,text="List File",command=list_file)
+list_btn.pack(anchor="nw")
+lst_box = Listbox(frame2,width=20)
+lst_box.pack(anchor="nw")
+
+#Creating Select Button
+search_btn=Button(frame2,text="Select")
+search_btn.pack(side=LEFT,anchor="nw")
+
+#Creation open button
+
+open_btn=Button(frame1,text="Open",command=open_img,bg="#00ffee")
+open_btn.pack(side=LEFT,padx=4)
+
+#Creating set button
+set_btn=Button(frame1,text="Set Open Image",bg="#00ffee",command=set_img)
+set_btn.pack(side=LEFT,padx=4)
+
+#Creating delete button
+delete_btn=Button(frame1,text="Delete",command=delete_img,bg="#00ffee")
+delete_btn.pack(side=LEFT)
+windwo.mainloop()
